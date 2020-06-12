@@ -14,7 +14,7 @@ typedef enum {
 
 typedef struct Token Token;
 
-// トークンの種類
+// トークンのなかみ
 struct Token {
 	TokenKind kind;		// トークンの型
 	Token *next;		// 次の入力トークン
@@ -34,7 +34,7 @@ void error(char *fmt, ...){
 	exit(1);
 }
 
-// 次のトークンが期待している記号の時読み進めてtrueを返す
+// 次のトークンが期待している記号(op)の時読み進めてtrueを返す
 bool consume(char op) {
 	if (token->kind != TK_RESERVED || token->str[0] != op)
 		return false;
@@ -49,7 +49,7 @@ void expect(char op) {
 	token = token->next;
 }
 
-// 次のトークンが期待している記号の時はトークンを１つ読み進め、それ以外はエラー報告
+// 次のトークンが数字の時はトークンを１つ読み進め、それ以外はエラー報告
 int expect_number() {
 	if(token->kind != TK_NUM)
 		error("数ではありません");
@@ -71,7 +71,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str){
 	return tok;
 }
 
-// 入力文字列をトーク内図して返す
+// 入力文字列をトークナイズして返す
 Token *tokenize(char *p){
 	Token head;
 	head.next = NULL;
@@ -95,7 +95,7 @@ Token *tokenize(char *p){
 			continue;
 		}
 
-		error("トークナイズでｄきません");
+		error("トークナイズできません");
 	}
 
 	new_token(TK_EOF, cur, p);
