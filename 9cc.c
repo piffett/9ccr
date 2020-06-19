@@ -147,6 +147,7 @@ Token *tokenize(char *p){
 Node *expr();
 Node *mul();
 Node *primary();
+Node *unary_on_primary();
 
 Node *expr() {
 	Node *node = mul();
@@ -162,13 +163,13 @@ Node *expr() {
 }
 
 Node *mul(){
-	Node *node = primary();
+	Node *node = unary_on_primary();
 
 	for(;;) {
 		if(consume('*'))
-			node = new_node(ND_MUL, node, primary());
+			node = new_node(ND_MUL, node, unary_on_primary());
 		else if(consume('/'))
-			node = new_node(ND_DIV, node, primary());
+			node = new_node(ND_DIV, node, unary_on_primary());
 		else
 			return node;
 	}
@@ -184,6 +185,14 @@ Node *primary(){
 	
 	// そうでなければ数値のはず
 	return new_node_num(expect_number());
+}
+
+Node *unary_on_primary(){
+	if(consume('+'))
+		return primary();
+	if(consume('-'))
+		return new_node(ND_SUB, new_node_num(0), primary());
+	return primary();
 }
 
 void gen(Node *node){
