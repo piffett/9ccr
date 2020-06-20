@@ -14,12 +14,6 @@ void error(char *loc, char *fmt, ...){
 	exit(1);
 }
 
-
-
-bool at_eof(){
-	return token->kind == TK_EOF;
-}
-
 // 新しくトークンを作成してcurにつなげる
 Token *new_token(TokenKind kind, Token *cur, char *str, int len){
 	Token *tok = calloc(1, sizeof(Token));
