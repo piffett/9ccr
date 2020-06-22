@@ -48,12 +48,13 @@ int expect_number() {
 	return val;
 }
 
-// 次のトークンが変数の時トークンを一つ読み進め,trueをかえす
+// 次のトークンが変数の時Tokenをかえす
 Token *consume_ident(){
 	if(token->kind != TK_IDENT)
-		return false;
+		return NULL;
+	Token *rtoken = token;
 	token = token->next;
-	return token;
+	return rtoken;
 }
 
 // パーサー用の宣言
@@ -173,7 +174,7 @@ Node *primary(){
 		Node *node = calloc(1, sizeof(Node));
 		node->kind = ND_LVAR;
 		node->offset = (tok->str[0] - 'a' + 1) * 8;
-		printf("%c", tok->str[0]);
+//		printf("%c", tok->str[1]);
 		return node;
 	}
 	
