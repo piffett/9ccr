@@ -1,7 +1,7 @@
 #include "9cc.h"
 
-// エラー報告関数。printfと同じ引数
-void error(char *loc, char *fmt, ...){
+// トークナイズ時のエラー報告関数。
+void error_at(char *loc, char *fmt, ...){
 	va_list ap;
 	va_start(ap, fmt);
 
@@ -25,12 +25,12 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len){
 }
 
 // 文字を比較
-bool front_cmp(char *p, char*q){
+bool front_cmp(char *p, char *q){
 	return memcmp(p, q, strlen(q)) == 0;
 }
 
 // 入力文字列をトークナイズして返す
-Token *tokenize(char *p){
+void tokenize(char *p){
 	Token head;
 	head.next = NULL;
 	Token *cur = &head;
@@ -51,8 +51,15 @@ Token *tokenize(char *p){
 
 		// 1文字記号のトークン作成
 		if(front_cmp(p, "+") || front_cmp(p, "-") || front_cmp(p, "*") || front_cmp(p,"/")||
-				front_cmp(p, "(") ||front_cmp(p, ")")||front_cmp(p, ">")||front_cmp(p, "<")){
+				front_cmp(p, "(") ||front_cmp(p, ")")||front_cmp(p, ">")||front_cmp(p, "<")||
+				front_cmp(p, "=") || front_cmp(p, ";")){
 			cur = new_token(TK_RESERVED, cur, p++, 1);
+			continue;
+		}
+
+		// 1文字変数の時識別子のトークンを作成
+		if ('a' <= *p && *p <= 'z'){
+			cur = new_token(TK_IDENT, cur, p++, 1);
 			continue;
 		}
 		
@@ -70,7 +77,8 @@ Token *tokenize(char *p){
 	}
 
 	new_token(TK_EOF, cur, p, 0);
-	return head.next;
+	
+	token = head.next;
 }
 
 

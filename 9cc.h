@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 // トークンの種類
 typedef enum {
 	TK_RESERVED, // 記号
+	TK_IDENT,     // 識別子
 	TK_NUM,      // 整数トークン
 	TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -34,6 +36,8 @@ typedef enum {
 	ND_LT,		// <
 	ND_LE,		// <=
 	ND_NUM,		// 整数
+	ND_ASSIGN,	// =
+	ND_LVAR,	// ローカル変数
 } NodeKind;
 
 typedef struct Node Node;
@@ -43,16 +47,8 @@ struct Node {
 	Node *lhs;			// 左辺
 	Node *rhs;			// 右辺
 	int val;			// ND_NUMのときの中身
+	int offset;			// kindがND_LVARのときに使う
 };
-
-// パーサー用の宣言
-Node *expr();
-Node *equality();
-Node *relational();
-Node *add();
-Node *mul();
-Node *primary();
-Node *unary_on_primary();
 
 // 今見ているトークン
 Token *token;
@@ -61,10 +57,19 @@ Token *token;
 char *user_input;
 
 // tokenize宣言
-Token *tokenize(char *p);
+void tokenize(char *p);
 
 // gen宣言
 void gen(Node *node);
 
-// error宣言
-void error(char *loc, char *fmt, ...);
+// トークナイズ時のerror
+void error_at(char *loc, char *fmt, ...);
+
+// エラー報告関数
+void error(char *fmt, ...);
+
+// parseのスタート関数
+void program();
+
+// 複数の式をもてるのでNodeを複数持たせる。
+Node *code[100];
