@@ -29,12 +29,19 @@ bool front_cmp(char *p, char *q){
 	return memcmp(p, q, strlen(q)) == 0;
 }
 
+// 英数字かアンダースコアか判定する
+int is_alnum(char c){
+	return ('a' <= c && c <= 'z')||
+			('A'<= c && c <= 'A')||
+			(c == '_');
+}
+
 // 変数名となるところまでポインタを進めて、変数の文字列を返す
 char *strtovar(char *p, char **endptr){
 	char *start_p = p;
 	int word_len = 0; // 文字数
 	for(;;){
-		if('a' <= *p && *p <= 'z'){
+		if(is_alnum(*p)){
 			p++;
 			word_len++;
 		}else{
@@ -79,8 +86,15 @@ void tokenize(char *p){
 			continue;
 		}
 
-		// 1文字変数の時識別子のトークンを作成
-		if ('a' <= *p && *p <= 'z'){
+		// return 文のときトークン作成
+		if(front_cmp(p, "return") && !is_alnum(*p)){
+			cur = new_token(TK_RETURN, cur, p, 6);
+			p += 6;
+			continue;
+		}
+
+		// 変数の時識別子のトークンを作成
+		if (is_alnum(*p)){
 			cur = new_token(TK_IDENT, cur, p, 1);
 			char *start_p = p;
 			cur->str = strtovar(p, &p);

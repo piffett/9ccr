@@ -5,5 +5,6 @@
 ```
 foo = 3;
 bar = 5 * 6 - 8;
-foo + bar / 2;
+ret = foo + bar / 2;
+return ret; 
 ```

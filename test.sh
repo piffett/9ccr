@@ -50,5 +50,8 @@ assert 14 'a = 3;b = 5 * 6 - 8;a + b / 2;'
 
 assert 10 'foo=10;bar=20;bar-foo;'
 
+assert 42 'return 42;'
+assert 6 'a=3;b=a*2;return b;'
+
 echo OK
 

@@ -94,8 +94,16 @@ void program(){
 }
 
 Node *stmt() {
-	Node *node = expr();
-	expect(";");
+	Node *node;
+
+	if(consume("return")){
+		node = calloc(1, sizeof(Node));
+		node->kind = ND_RETURN;
+		node->lhs = expr();
+	}else{
+		node = expr();
+	}
+	consume(";");
 	return node;
 }
 
@@ -182,13 +190,9 @@ Node *primary(){
 		return node;
 	}
 
-	// printf("0");
 	Token *tok = consume_ident();
-	//  printf("1");
 	if(tok){
-		// printf("2");
 		Node *node = calloc(1, sizeof(Node));
-		// printf("3");
 		node->kind = ND_LVAR;
 
 		LVar *lvar = find_lvar(tok);
