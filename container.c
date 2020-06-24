@@ -29,6 +29,28 @@ bool front_cmp(char *p, char *q){
 	return memcmp(p, q, strlen(q)) == 0;
 }
 
+// 変数名となるところまでポインタを進めて、変数の文字列を返す
+char *strtovar(char *p, char **endptr){
+	char *start_p = p;
+	int word_len = 0; // 文字数
+	for(;;){
+		if('a' <= *p && *p <= 'z'){
+			p++;
+			word_len++;
+		}else{
+			break;
+		}
+	}
+
+	char *var = calloc(word_len+1, sizeof(char));
+	for(int i =0; i < word_len; i++){
+		var[i] = *(start_p+i);
+	}
+	var[word_len] = '\0';
+	*endptr = p;
+	return var;
+}
+
 // 入力文字列をトークナイズして返す
 void tokenize(char *p){
 	Token head;
@@ -59,12 +81,15 @@ void tokenize(char *p){
 
 		// 1文字変数の時識別子のトークンを作成
 		if ('a' <= *p && *p <= 'z'){
-			cur = new_token(TK_IDENT, cur, p++, 1);
+			cur = new_token(TK_IDENT, cur, p, 1);
+			char *start_p = p;
+			cur->str = strtovar(p, &p);
+			cur->len = p - start_p+1;
 			continue;
 		}
 		
 		
-
+		// 整数の時トークンを作成
 		if(isdigit(*p)) {
 			cur = new_token(TK_NUM, cur, p, 0);
 			char *start_p = p;

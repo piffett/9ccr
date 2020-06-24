@@ -57,6 +57,14 @@ Token *consume_ident(){
 	return rtoken;
 }
 
+// 変数を名前で検索する。なければNULL
+LVar *find_lvar(Token *tok){
+	for(LVar *var = locals; var; var= var->next)
+		if(var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+			return var;
+	return NULL;
+}
+
 // パーサー用の宣言
 Node *stmt();
 Node *expr();
@@ -73,6 +81,11 @@ bool at_eof(){
 }
 
 void program(){
+	LVar *lvar = calloc(1, sizeof(LVar));
+	lvar->next =locals;
+	lvar->offset = 0;
+	locals = lvar;
+
 	int i = 0;
 	while(!at_eof())
 		code[i++] = stmt();
@@ -169,12 +182,27 @@ Node *primary(){
 		return node;
 	}
 
+	// printf("0");
 	Token *tok = consume_ident();
+	//  printf("1");
 	if(tok){
+		// printf("2");
 		Node *node = calloc(1, sizeof(Node));
+		// printf("3");
 		node->kind = ND_LVAR;
-		node->offset = (tok->str[0] - 'a' + 1) * 8;
-//		printf("%c", tok->str[1]);
+
+		LVar *lvar = find_lvar(tok);
+		if(lvar){
+			node->offset = lvar->offset;
+		}else{
+			lvar = calloc(1, sizeof(LVar));
+			lvar->next = locals;
+			lvar->name = tok->str;
+			lvar->len = tok->len;
+			lvar->offset = locals->offset +8;
+			node->offset = lvar->offset;
+			locals = lvar;
+		}
 		return node;
 	}
 	

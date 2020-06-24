@@ -44,8 +44,11 @@ assert 0 '0>=1;'
 assert 1 '1>=1;'
 assert 1 '2>=1;'
 
-assert 4 'a=4;a;'
+assert 4 'a=4;'
+assert 3 'b=3;a=3;b;'
 assert 14 'a = 3;b = 5 * 6 - 8;a + b / 2;'
+
+assert 10 'foo=10;bar=20;bar-foo;'
 
 echo OK
 

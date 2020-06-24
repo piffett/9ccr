@@ -73,3 +73,19 @@ void program();
 
 // 複数の式をもてるのでNodeを複数持たせる。
 Node *code[100];
+
+typedef struct LVar LVar;
+
+// ローカル変数の型
+struct LVar{
+	LVar *next;
+	char *name;
+	int len;
+	int offset;
+};
+
+// ローカル変数
+LVar *locals;
+
+// 変数を名前で検索する。見つからなければNULLを返す。実装はparser.cに
+LVar *find_lvar(Token *tok);
