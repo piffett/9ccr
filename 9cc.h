@@ -101,3 +101,6 @@ LVar *locals;
 
 // 変数を名前で検索する。見つからなければNULLを返す。実装はparser.cに
 LVar *find_lvar(Token *tok);
+
+// ラベルのための変数
+int label_num;

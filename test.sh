@@ -53,5 +53,6 @@ assert 10 'foo=10;bar=20;bar-foo;'
 assert 42 'return 42;'
 assert 6 'a=3;b=a*2;return b;'
 
+assert 4 'a=3;if(a==3)return a+1;'
 echo OK
 
