@@ -57,6 +57,7 @@ assert 4 'a=3;if (a==4) return a;return 4;'
 assert 4 'a=3;if (a==3) if (a==3)a=4;return a;'
 
 assert 5 'if(4==1+2) return 3; else return 5;'
+assert 6 'a=1;while(a!=6)a=a+1;return a;'
 
 echo OK
 
