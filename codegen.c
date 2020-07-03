@@ -10,6 +10,7 @@ void gen_lval(Node *node){
 }
 
 void gen(Node *node){
+	int tmp, tmp2;
 	switch(node->kind){
 		case ND_NUM:
 			printf("	push %d\n", node->val);
@@ -40,11 +41,26 @@ void gen(Node *node){
 			gen(node->lhs);
 			printf("	pop rax\n");
 			printf("	cmp rax, 0\n");
-			int tmp = label_num;
+			tmp = label_num;
 			printf("	je .L%d\n", label_num);
 			label_num++;
 			gen(node->rhs);
 			printf(".L%d:\n", tmp);
+			return;
+		case ND_ELSE:
+			gen(node->lhs);
+			printf("	pop rax\n");
+			printf("	cmp rax, 0\n");
+			tmp = label_num;
+			printf("	je .L%d\n", label_num);
+			label_num++;
+			gen(node->rhs);
+			tmp2 = label_num;
+			printf("	jmp .L%d\n", label_num);
+			label_num++;
+			printf(".L%d:\n", tmp);
+			gen(node->third);
+			printf(".L%d:\n", tmp2);
 			return;
 	}
 
