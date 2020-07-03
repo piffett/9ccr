@@ -14,3 +14,7 @@ a = 3;
 if(a==3)
 	return a;
 ```
+
+```
+for(i=0; i<5; i=i+1) a=1; return i;
+```
