@@ -8,3 +8,9 @@ bar = 5 * 6 - 8;
 ret = foo + bar / 2;
 return ret; 
 ```
+
+```
+a = 3;
+if(a==3)
+	return a;
+```
