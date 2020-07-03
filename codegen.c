@@ -51,16 +51,15 @@ void gen(Node *node){
 			gen(node->lhs);
 			printf("	pop rax\n");
 			printf("	cmp rax, 0\n");
-			tmp = label_num;
-			printf("	je .L%d\n", tmp);
+			label_num;
+			printf("	je .L%d\n", label_num);
 			label_num++;
 			gen(node->rhs);
-			tmp2 = label_num;
-			printf("	jmp .L%d\n", tmp2);
+			printf("	jmp .L%d\n", label_num);
 			label_num++;
-			printf(".L%d:\n", tmp);
+			printf(".L%d:\n", label_num-2);
 			gen(node->third);
-			printf(".L%d:\n", tmp2);
+			printf(".L%d:\n", label_num-1);
 			return;
 		case ND_WHILE:
 			label_num += 2;
