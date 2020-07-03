@@ -1,0 +1,21 @@
+.intel_syntax noprefix
+.global main
+main:
+	push rbp
+	mov rbp, rsp
+	sub rsp, 208
+	push 10
+	pop rax
+	mov rsp rbp
+	pop rbp
+	ret
+	pop rax
+	push 5
+	pop rax
+	mov rsp rbp
+	pop rbp
+	ret
+	pop rax
+	mov rsp, rbp
+	pop rbp
+	ret

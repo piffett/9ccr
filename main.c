@@ -6,6 +6,9 @@ int main(int argc, char **argv){
 		return 1;
 	}
 
+	// ジャンプのラベル用
+	label_num = 0;
+
 	// トークナイズしてパース
 	//結果はcodeに保存
 	user_input = argv[1];

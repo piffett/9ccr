@@ -50,10 +50,11 @@ assert 14 'a = 3;b = 5 * 6 - 8;a + b / 2;'
 
 assert 10 'foo=10;bar=20;bar-foo;'
 
-assert 42 'return 42;'
+assert 42 'return 42;return 5;'
 assert 6 'a=3;b=a*2;return b;'
 
-assert 4 'a=3;if(a==3)return a+1;'
-assert 4 'a=3;if(a==4)return a;return a+1;'
+assert 4 'a=3;if (a==3) return a+1;'
+assert 4 'a=3;if (a==4) return a;return 4;'
+assert 4 'a=3;if (a==3) if (a==3)a=4;return a;'
 echo OK
 

@@ -32,7 +32,7 @@ void gen(Node *node){
 		case ND_RETURN:
 			gen(node->lhs);
 			printf("	pop rax\n");
-			printf("	mov rsp rbp\n");
+			printf("	mov rsp, rbp\n");
 			printf("	pop rbp\n");
 			printf("	ret\n");
 			return;
@@ -44,7 +44,7 @@ void gen(Node *node){
 			printf("	je .L%d\n", label_num);
 			label_num++;
 			gen(node->rhs);
-			printf("L%d:\n", tmp);
+			printf(".L%d:\n", tmp);
 			return;
 	}
 
