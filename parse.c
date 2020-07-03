@@ -105,9 +105,48 @@ void program(){
 
 Node *stmt() {
 	Node *node;
+	Node *node2;
+	Node *node3;
 
-	// return文
-	if(consume("return")){
+	if(consume("if")){
+		expect("(");
+		node = expr();
+		expect(")");
+		node2 = stmt();
+		if(consume("else")){
+			node = new_node(ND_ELSE, node, node2, stmt(), NULL);
+		}else{
+			node = new_node(ND_IF, node, node2, NULL, NULL);
+		}
+	}else if(consume("while")){
+		expect("(");
+		node = expr();
+		expect(")");
+		node = new_node(ND_WHILE, node, stmt(), NULL, NULL);
+	}else if(consume("for")){
+		expect("(");
+		if(consume(";")){
+			node = NULL;
+		}else{
+			node = expr();
+			expect(";");
+		}
+		if(consume(";")){
+			node2 = NULL;
+		}else{
+			node2 = expr();
+			expect(";");
+		}
+		if(consume(";")){
+			node3 = NULL;
+		}else{
+			node = expr();
+			expect(";");
+		}
+
+		node = new_node(TK_FOR, node, node2, node3, stmt());
+
+	}else if(consume("return")){
 		node = calloc(1, sizeof(Node));
 		node->kind = ND_RETURN;
 		node->lhs = expr();
