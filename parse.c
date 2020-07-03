@@ -24,7 +24,7 @@ Node *new_node_num(int val){
 // 次のトークンが期待している記号(op)の時読み進めてtokenを返す
 bool consume(char *op) {
 	// printf("%s", op);
-	if (!(token->kind == TK_RESERVED||token->kind == TK_RETURN || token->kind == TK_IF || token->kind == TK_ELSE || token->kind == TK_WHILE) 
+	if (!(token->kind == TK_RESERVED||token->kind == TK_RETURN || token->kind == TK_IF || token->kind == TK_ELSE || token->kind == TK_WHILE|| token->kind == TK_FOR) 
 		|| strlen(op) != token->len ||
 		memcmp(token->str,op, token->len)){
 		return false;
@@ -137,14 +137,14 @@ Node *stmt() {
 			node2 = expr();
 			expect(";");
 		}
-		if(consume(";")){
+		if(consume(")")){
 			node3 = NULL;
 		}else{
-			node = expr();
-			expect(";");
+			node3 = expr();
+			expect(")");
 		}
 
-		node = new_node(TK_FOR, node, node2, node3, stmt());
+		node = new_node(ND_FOR, node, node2, node3, stmt());
 
 	}else if(consume("return")){
 		node = calloc(1, sizeof(Node));
