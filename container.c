@@ -93,6 +93,34 @@ void tokenize(char *p){
 			continue;
 		}
 
+		// if文の時トークン作成
+		if(front_cmp(p, "if") && !is_alnum(*p)){
+			cur = new_token(TK_IF, cur, p, 2);
+			p += 2;
+			continue;
+		}
+
+		// else の時トークン作成
+		if(front_cmp(p, "else") && !is_alnum(*p)){
+			cur = new_token(TK_ELSE, cur, p, 4);
+			p += 4;
+			continue;
+		}
+
+		// while 文の時トークン作成
+		if(front_cmp(p, "while") && !is_alnum(*p)){
+			cur = new_token(TK_WHILE, cur, p, 5);
+			p += 5;
+			continue;
+		}
+
+		// for 文の時トークン作成
+		if(front_cmp(p, "for") && !is_alnum(*p)){
+			cur = new_token(TK_FOR, cur, p, 3);
+			p += 3;
+			continue;
+		}
+
 		// 変数の時識別子のトークンを作成
 		if (is_alnum(*p)){
 			cur = new_token(TK_IDENT, cur, p, 1);

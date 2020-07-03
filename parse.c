@@ -2,11 +2,13 @@
 
 
 // Node作成関数
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs){
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs, Node *third, Node *forth){
 	Node *node = calloc(1, sizeof(Node));
 	node->kind = kind;
 	node->lhs = lhs;
 	node->rhs = rhs;
+	node->third = third;
+	node->forth = forth;
 	return node;
 }
 
@@ -32,11 +34,19 @@ bool consume(char *op) {
 	return true;
 }
 
-// 次のトークンが期待している記号の時トークンを進める
+// 次のトークンが期待している記号の時トークンを進め、なければエラー
 void expect(char *op) {
 	if(token->kind != TK_RESERVED || strlen(op) != token->len || memcmp(token->str, op, token->len))
 		error_at(token->str, "'%c'ではありません", op);
 	token = token->next;
+}
+
+// 次の次のトークンが期待している記号ならtrueを返す
+bool is_nextnext(char *op){
+	if(memcmp(token->next->str, op, token->next->len)==0){
+		return true;
+	}
+	return false;
 }
 
 // 次のトークンが数字の時はトークンを１つ読み進め、それ以外はエラー報告
@@ -96,6 +106,7 @@ void program(){
 Node *stmt() {
 	Node *node;
 
+	// return文
 	if(consume("return")){
 		node = calloc(1, sizeof(Node));
 		node->kind = ND_RETURN;
@@ -103,7 +114,9 @@ Node *stmt() {
 	}else{
 		node = expr();
 	}
+
 	consume(";");
+
 	return node;
 }
 
@@ -114,7 +127,7 @@ Node *expr() {
 Node *assign() {
 	Node *node = equality();
 	if (consume("="))
-		node = new_node(ND_ASSIGN, node, assign());
+		node = new_node(ND_ASSIGN, node, assign(), NULL, NULL);
 	return node;
 }
 
@@ -123,9 +136,9 @@ Node *equality() {
 
 	for(;;){
 		if(consume("=="))
-			node = new_node(ND_EQ, node, relational());
+			node = new_node(ND_EQ, node, relational(), NULL, NULL);
 		else if(consume("!="))
-			node = new_node(ND_NE, node, relational());
+			node = new_node(ND_NE, node, relational(), NULL, NULL);
 		else
 			return node;
 	}
@@ -136,13 +149,13 @@ Node *relational() {
 
 	for(;;){
 		if(consume("<"))
-			node = new_node(ND_LT, node, add());
+			node = new_node(ND_LT, node, add(), NULL, NULL);
 		else if(consume("<="))
-			node = new_node(ND_LE, node, add());
+			node = new_node(ND_LE, node, add(), NULL, NULL);
 		else if(consume(">"))
-			node = new_node(ND_LT, add(), node);
+			node = new_node(ND_LT, add(), node, NULL, NULL);
 		else if(consume(">="))
-			node = new_node(ND_LE, add(), node);
+			node = new_node(ND_LE, add(), node, NULL, NULL);
 		else
 			return node;
 	}
@@ -153,9 +166,9 @@ Node *add() {
 
 	for(;;) {
 		if(consume("+"))
-			node = new_node(ND_ADD, node, mul());
+			node = new_node(ND_ADD, node, mul(), NULL, NULL);
 		else if (consume("-"))
-			node = new_node(ND_SUB, node, mul());
+			node = new_node(ND_SUB, node, mul(), NULL, NULL);
 		else
 			return node;
 	}
@@ -166,9 +179,9 @@ Node *mul(){
 
 	for(;;) {
 		if(consume("*"))
-			node = new_node(ND_MUL, node, unary_on_primary());
+			node = new_node(ND_MUL, node, unary_on_primary(), NULL, NULL);
 		else if(consume("/"))
-			node = new_node(ND_DIV, node, unary_on_primary());
+			node = new_node(ND_DIV, node, unary_on_primary(), NULL, NULL);
 		else
 			return node;
 	}
@@ -178,7 +191,7 @@ Node *unary_on_primary(){
 	if(consume("+"))
 		return primary();
 	if(consume("-"))
-		return new_node(ND_SUB, new_node_num(0), primary());
+		return new_node(ND_SUB, new_node_num(0), primary(), NULL, NULL);
 	return primary();
 }
 
@@ -190,6 +203,7 @@ Node *primary(){
 		return node;
 	}
 
+	// 変数時の処理
 	Token *tok = consume_ident();
 	if(tok){
 		Node *node = calloc(1, sizeof(Node));
