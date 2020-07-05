@@ -108,7 +108,10 @@ Node *stmt() {
 	Node *node2;
 	Node *node3;
 
-	if(consume("if")){
+	if(consume("{")){
+		
+
+	}else if(consume("if")){
 		expect("(");
 		node = expr();
 		expect(")");
@@ -118,11 +121,13 @@ Node *stmt() {
 		}else{
 			node = new_node(ND_IF, node, node2, NULL, NULL);
 		}
+
 	}else if(consume("while")){
 		expect("(");
 		node = expr();
 		expect(")");
 		node = new_node(ND_WHILE, node, stmt(), NULL, NULL);
+
 	}else if(consume("for")){
 		expect("(");
 		if(consume(";")){
@@ -143,15 +148,16 @@ Node *stmt() {
 			node3 = expr();
 			expect(")");
 		}
-
 		node = new_node(ND_FOR, node, node2, node3, stmt());
 
 	}else if(consume("return")){
 		node = calloc(1, sizeof(Node));
 		node->kind = ND_RETURN;
 		node->lhs = expr();
+
 	}else{
 		node = expr();
+
 	}
 
 	consume(";");
