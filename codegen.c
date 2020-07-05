@@ -41,8 +41,8 @@ void gen(Node *node){
 			gen(node->lhs);
 			printf("	pop rax\n");
 			printf("	cmp rax, 0\n");
-			tmp = label_num;
 			printf("	je .L%d\n", label_num);
+			tmp = label_num;
 			label_num++;
 			gen(node->rhs);
 			printf(".L%d:\n", tmp);
@@ -51,18 +51,20 @@ void gen(Node *node){
 			gen(node->lhs);
 			printf("	pop rax\n");
 			printf("	cmp rax, 0\n");
-			label_num;
-			printf("	je .L%d\n", label_num);
+			tmp = label_num;
+			printf("	je .L%d\n", tmp);
 			label_num++;
+			tmp2 = label_num;
 			gen(node->rhs);
-			printf("	jmp .L%d\n", label_num);
+			printf("	jmp .L%d\n", tmp2);
 			label_num++;
-			printf(".L%d:\n", label_num-2);
+			printf(".L%d:\n", tmp);
 			gen(node->third);
-			printf(".L%d:\n", label_num-1);
+			printf(".L%d:\n", tmp2);
 			return;
 		case ND_WHILE:
 			label_num += 2;
+			tmp = label_num;
 			printf(".L%d:\n", label_num-1);
 			gen(node->lhs);
 			printf("	pop rax\n");
@@ -73,17 +75,20 @@ void gen(Node *node){
 			printf(".L%d:\n", label_num-2);
 			return;
 		case ND_FOR:
+			tmp = label_num;
+			tmp2 = label_num+1;
 			label_num += 2;
+
 			gen(node->lhs);
-			printf(".L%d:\n", label_num-1);
+			printf(".L%d:\n", tmp2);
 			gen(node->rhs);
 			printf("	pop rax\n");
 			printf("	cmp rax, 0\n");
-			printf("	je .L%d\n", label_num-2);
+			printf("	je .L%d\n", tmp);
 			gen(node->forth);
 			gen(node->third);
-			printf("	jmp .L%d\n", label_num-1);
-			printf(".L%d:\n", label_num-2);
+			printf("	jmp .L%d\n", tmp2);
+			printf(".L%d:\n", tmp);
 			return;
 	}
 

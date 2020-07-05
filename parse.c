@@ -109,7 +109,12 @@ Node *stmt() {
 	Node *node3;
 
 	if(consume("{")){
-		
+		node = new_node(ND_BLOCK, NULL, NULL, NULL, NULL);
+		node2 = node;
+		while(!consume("}")){
+			node2->next = stmt();
+			node2 = node2->next;
+		}		
 
 	}else if(consume("if")){
 		expect("(");
