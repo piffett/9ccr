@@ -59,5 +59,8 @@ assert 5 'if(4==1+2) return 3; else return 5;'
 assert 6 'a=1;while(a!=6)a=a+1;return a;'
 assert 5 'for(i=0;i<5;i=i+1) a=1; return i;'
 
+assert 5 'a=1;b=2;if(b==a+1){a=2;b=3;}return a+b;'
+
 echo OK
+
 

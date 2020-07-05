@@ -81,7 +81,7 @@ void tokenize(char *p){
 		// 1文字記号のトークン作成
 		if(front_cmp(p, "+") || front_cmp(p, "-") || front_cmp(p, "*") || front_cmp(p,"/")||
 				front_cmp(p, "(") ||front_cmp(p, ")")||front_cmp(p, ">")||front_cmp(p, "<")||
-				front_cmp(p, "=") || front_cmp(p, ";")){
+				front_cmp(p, "=") || front_cmp(p, ";") || front_cmp(p, "{") || front_cmp(p, "}") ){
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue;
 		}
@@ -126,7 +126,7 @@ void tokenize(char *p){
 			cur = new_token(TK_IDENT, cur, p, 1);
 			char *start_p = p;
 			cur->str = strtovar(p, &p);
-			cur->len = p - start_p+1;
+			cur->len = p - start_p;
 			continue;
 		}
 		

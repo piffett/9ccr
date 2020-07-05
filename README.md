@@ -16,5 +16,18 @@ if(a==3)
 ```
 
 ```
-for(i=0; i<5; i=i+1) a=1; return i;
+for(i=0; i<5; i=i+1)
+	a=1;
+
+return i;
+```
+
+```
+a=1;
+b=2;
+if(b==a+1){
+	a=2;
+	b=3;
+}
+return a+b;
 ```
