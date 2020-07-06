@@ -253,25 +253,37 @@ Node *primary(){
 		return node;
 	}
 
-	// 変数時の処理
+	// 変数or関数時の処理
 	Token *tok = consume_ident();
 	if(tok){
-		Node *node = calloc(1, sizeof(Node));
-		node->kind = ND_LVAR;
+		// 関数時
+		if(consume("(")){
+			Node *node = calloc(1, sizeof(Node));
+			node->kind = ND_FUNC;
+			node->str =	tok->str;
+			node->len = tok->len;
 
-		LVar *lvar = find_lvar(tok);
-		if(lvar){
-			node->offset = lvar->offset;
+			expect(")");
+			return node;
+
 		}else{
-			lvar = calloc(1, sizeof(LVar));
-			lvar->next = locals;
-			lvar->name = tok->str;
-			lvar->len = tok->len;
-			lvar->offset = locals->offset +8;
-			node->offset = lvar->offset;
-			locals = lvar;
+			Node *node = calloc(1, sizeof(Node));
+			node->kind = ND_LVAR;
+	
+			LVar *lvar = find_lvar(tok);
+			if(lvar){
+				node->offset = lvar->offset;
+			}else{
+				lvar = calloc(1, sizeof(LVar));
+				lvar->next = locals;
+				lvar->name = tok->str;
+				lvar->len = tok->len;
+				lvar->offset = locals->offset +8;
+				node->offset = lvar->offset;
+				locals = lvar;
+			}
+			return node;
 		}
-		return node;
 	}
 	
 	// そうでなければ数値のはず

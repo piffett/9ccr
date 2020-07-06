@@ -6,7 +6,7 @@ OBJS=$(SRCS:.c=.o)
 	$(CC) -o 9cc $(OBJS) $(LDFLAGS)
 
 debug: $(OBJS)
-	$(CC) -o 9cc $(OBJS) $(LDFLAGS)
+	$(CC) -g -O2 -o 9cc $(OBJS) $(LDFLAGS)
 
 $(OBJS): 9cc.h
 
