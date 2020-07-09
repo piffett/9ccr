@@ -260,15 +260,16 @@ Node *primary(){
 		// 関数時
 		if(consume("(")){
 			// 関数Node
-			Node *node = calloc(1, sizeof(Node));
-			node->kind = ND_FUNC;
-			node->str =	tok->str;
+			Node *node = new_node(ND_FUNC, NULL, NULL, NULL, NULL);
+			node->str = tok->str;
 			node->len = tok->len;
+			node->next = NULL;
 
 			node2 = node;
 			while(!consume(")")){
 				node2->next = expr();
 				node2 = node2->next;
+				node2->next = NULL;
 				if(consume(")"))
 					break;
 				expect(",");

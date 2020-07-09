@@ -10,6 +10,8 @@ void gen_lval(Node *node){
 	printf("	push rax\n");
 }
 
+char *argRegs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
 void gen(Node *node){
 	int tmp, tmp2;
 	switch(node->kind){
@@ -98,8 +100,20 @@ void gen(Node *node){
 			}
 			return;
 		case ND_FUNC:
-			printf("	call %s\n", node->str);
-			return;
+			{
+				int argCount = 0;
+				for(Node *nex = node->next; nex; nex = nex->next){
+					gen(nex);
+					argCount++;
+				}
+
+				for(int i = argCount - 1; i >=0; i--){
+					printf("	pop %s\n", argRegs[i]);
+				}
+				printf("	call %s\n", node->str);
+				printf("	push rax\n");
+				return;
+			}
 	}
 
 	gen(node->lhs);

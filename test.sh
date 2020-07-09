@@ -16,6 +16,7 @@ assert(){
   fi
 }
 
+
 # assert 42 '42;'
 
 assert 41 ' 12 + 34 - 5 ;'
@@ -62,7 +63,10 @@ assert 5 'for(i=0;i<5;i=i+1) a=1; return i;'
 assert 5 'a=1;b=2;if(b==a+1){a=2;b=3;}return a+b;'
 
 assert 1 'foo();return 1;'
-assert 3 'return foo2(1 , 2);'
+# assert 64 'foo2(1 , 2);'
+assert 1 'foo3(1, 2, 3);return 1'
+assert 5 'a=5;a= bar(1, 5);return a;'
+assert 5 'a=1;a=bar(1, 5);return a;'
 
 echo OK
 
