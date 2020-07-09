@@ -110,7 +110,20 @@ void gen(Node *node){
 				for(int i = argCount - 1; i >=0; i--){
 					printf("	pop %s\n", argRegs[i]);
 				}
+				tmp = label_num;
+				label_num++;
+				printf("	mov rax, rsp\n");
+				printf("	and rax, 15\n");
+				printf("	jnz .L.call.%d\n", tmp);
+				printf("	mov rax, 0\n");
 				printf("	call %s\n", node->str);
+				printf("	jmp .L.end.%d\n", tmp);
+				printf(".L.call.%d:\n", tmp);
+				printf("	sub rsp, 8\n");
+				printf("	mov rax, 0\n");
+				printf("	call %s\n", node->str);
+				printf("	add rsp, 8\n");
+				printf(".L.end.%d:\n", tmp);
 				printf("	push rax\n");
 				return;
 			}
