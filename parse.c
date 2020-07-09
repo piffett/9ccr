@@ -37,7 +37,7 @@ bool consume(char *op) {
 // 次のトークンが期待している記号の時トークンを進め、なければエラー
 void expect(char *op) {
 	if(token->kind != TK_RESERVED || strlen(op) != token->len || memcmp(token->str, op, token->len))
-		error_at(token->str, "'%c'ではありません", op);
+		error_at(token->str, "'%c'ではありません", *op);
 	token = token->next;
 }
 
@@ -246,6 +246,7 @@ Node *unary_on_primary(){
 }
 
 Node *primary(){
+	Node *node2;
 	// 次のトークンが"("なら、"(" expr ")"
 	if(consume( "(" ) ) {
 		Node *node = expr();
@@ -258,12 +259,21 @@ Node *primary(){
 	if(tok){
 		// 関数時
 		if(consume("(")){
+			// 関数Node
 			Node *node = calloc(1, sizeof(Node));
 			node->kind = ND_FUNC;
 			node->str =	tok->str;
 			node->len = tok->len;
 
-			expect(")");
+			node2 = node;
+			while(!consume(")")){
+				node2->next = expr();
+				node2 = node2->next;
+				if(consume(")"))
+					break;
+				expect(",");
+			}		
+
 			return node;
 
 		}else{

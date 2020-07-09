@@ -33,6 +33,7 @@ bool front_cmp(char *p, char *q){
 int is_alnum(char c){
 	return ('a' <= c && c <= 'z')||
 			('A'<= c && c <= 'A')||
+			('0' <= c && c <= '9')||
 			(c == '_');
 }
 
@@ -81,7 +82,8 @@ void tokenize(char *p){
 		// 1文字記号のトークン作成
 		if(front_cmp(p, "+") || front_cmp(p, "-") || front_cmp(p, "*") || front_cmp(p,"/")||
 				front_cmp(p, "(") ||front_cmp(p, ")")||front_cmp(p, ">")||front_cmp(p, "<")||
-				front_cmp(p, "=") || front_cmp(p, ";") || front_cmp(p, "{") || front_cmp(p, "}") ){
+				front_cmp(p, "=") || front_cmp(p, ";") || front_cmp(p, "{") || front_cmp(p, "}")||
+			front_cmp(p, ",") ){
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue;
 		}
@@ -120,7 +122,15 @@ void tokenize(char *p){
 			p += 3;
 			continue;
 		}
-
+		
+		// 整数の時トークンを作成
+		if(isdigit(*p)) {
+			cur = new_token(TK_NUM, cur, p, 0);
+			char *start_p = p;
+			cur->val = strtol(p, &p, 10);
+			cur->len = p - start_p;
+			continue;
+		}
 		// 変数の時識別子のトークンを作成
 		if (is_alnum(*p)){
 			cur = new_token(TK_IDENT, cur, p, 1);
@@ -131,14 +141,7 @@ void tokenize(char *p){
 		}
 		
 		
-		// 整数の時トークンを作成
-		if(isdigit(*p)) {
-			cur = new_token(TK_NUM, cur, p, 0);
-			char *start_p = p;
-			cur->val = strtol(p, &p, 10);
-			cur->len = p - start_p;
-			continue;
-		}
+		
 
 		error(token->str, "トークナイズできません");
 	}

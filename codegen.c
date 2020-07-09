@@ -1,5 +1,6 @@
 #include "9cc.h"
 
+
 void gen_lval(Node *node){
 	if(node->kind != ND_LVAR)
 		error("代入の左辺値が変数ではありません");
