@@ -127,6 +127,27 @@ void gen(Node *node){
 				printf("	push rax\n");
 				return;
 			}
+		case ND_FUNC_DEF:
+			{
+				int argCount = 0;
+				printf("%s:\n", node->str);
+				// プロローグ
+				// 変数26個分の領域確保
+				printf("	push rbp\n");
+				printf("	mov rbp, rsp\n");
+				printf("	sub rsp, 208\n");
+				
+				gen(node->lhs);
+
+				// エピローグ
+				// 最後の式の値がRAXに残っているのでロードして返り値にセット
+				printf("	mov rsp, rbp\n");
+				printf("	pop rbp\n");
+				printf("	ret\n");
+				return;
+
+			}
+
 	}
 
 	gen(node->lhs);

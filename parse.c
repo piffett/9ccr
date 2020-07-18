@@ -76,6 +76,7 @@ LVar *find_lvar(Token *tok){
 }
 
 // パーサー用の宣言
+Node *func();
 Node *stmt();
 Node *expr();
 Node *assign();
@@ -98,10 +99,45 @@ void program(){
 
 	int i = 0;
 	while(!at_eof())
-		code[i++] = stmt();
+		code[i++] = func();
 
 	code[i] = NULL;
 }
+
+// func = ident "(" ")" "{" stmt * "}"
+Node *func(){
+	Node *node;
+	Node *node2;
+	Node *node3;
+	Token *tok = consume_ident();
+	if(tok){
+		node = new_node(ND_FUNC_DEF,NULL, NULL, NULL, NULL);
+		node->str = tok->str;
+		node->len = tok->len;
+		node->next = NULL;
+
+		expect("(");
+		expect(")");
+		
+		node2 = node;
+		if(consume("{")){
+			node3 = new_node(ND_BLOCK, NULL, NULL, NULL, NULL);
+			node->lhs = node3;
+			node2 = node3;
+			while(!consume("}")){
+				node2->next = stmt();
+				node2 = node2->next;
+			}		
+
+		}
+	}else{
+		printf("関数が来ていません\n");
+	}
+
+	return node;
+	
+}
+
 
 Node *stmt() {
 	Node *node;
