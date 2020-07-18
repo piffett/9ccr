@@ -73,7 +73,7 @@ assert 47 'main(){return 5+6*7;return 1;}'
 # assert 64 'foo2(1 , 2);'
 ## assert 1 'foo3(1, 2, 3);return 1'
 ## assert 5 'a=5;a= bar(1, 5);return a;'
-## assert 5 'a=1;a=bar(1, 5);return a;'
+assert 5 'main(){a=1;a=bar(1, 5);return a;}'
 
 echo OK
 
