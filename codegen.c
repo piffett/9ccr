@@ -13,7 +13,7 @@ void gen_lval(Node *node){
 char *argRegs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
 void gen(Node *node){
-	int tmp, tmp2;
+	int tmp, tmp2, argCount;
 	switch(node->kind){
 		case ND_NUM:
 			printf("	push %d\n", node->val);
@@ -96,12 +96,11 @@ void gen(Node *node){
 		case ND_BLOCK:
 			for(Node *nvar = node->next; nvar; nvar = nvar->next){
 				gen(nvar);
-				printf("	pop rax\n");
 			}
 			return;
 		case ND_FUNC:
 			{
-				int argCount = 0;
+				argCount = 0;
 				for(Node *nex = node->next; nex; nex = nex->next){
 					gen(nex);
 					argCount++;
@@ -129,7 +128,6 @@ void gen(Node *node){
 			}
 		case ND_FUNC_DEF:
 			{
-				int argCount = 0;
 				printf("%s:\n", node->str);
 				// プロローグ
 				// 変数26個分の領域確保
@@ -137,13 +135,16 @@ void gen(Node *node){
 				printf("	mov rbp, rsp\n");
 				printf("	sub rsp, 208\n");
 				
+				argCount = 0;
+
+				for(Node *nex = node->rhs; nex; nex=nex->next){
+					gen_lval(nex);
+					printf("	mov [rax], %s\n", argRegs[argCount]);
+					printf("	push rdi\n");
+					argCount++;
+				}
 				gen(node->lhs);
 
-				// エピローグ
-				// 最後の式の値がRAXに残っているのでロードして返り値にセット
-				printf("	mov rsp, rbp\n");
-				printf("	pop rbp\n");
-				printf("	ret\n");
 				return;
 
 			}

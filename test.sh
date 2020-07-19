@@ -19,7 +19,9 @@ assert(){
 
 assert 1 'main(){return 1;}'
 
-assert 10 'foo(){return 5;}main(){a=5;return a+foo();}'
+assert 10 'foof(){return 5;}main(){a=5;return a+foof();}'
+
+assert 14 'foof(a, b){return a*2+b;}main(){return foof(2,10);} '
 
 # 以下は以前のやつ。main対応もいつかやる
 

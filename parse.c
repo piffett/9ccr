@@ -92,11 +92,6 @@ bool at_eof(){
 }
 
 void program(){
-	LVar *lvar = calloc(1, sizeof(LVar));
-	lvar->next =locals;
-	lvar->offset = 0;
-	locals = lvar;
-
 	int i = 0;
 	while(!at_eof())
 		code[i++] = func();
@@ -104,34 +99,67 @@ void program(){
 	code[i] = NULL;
 }
 
-// func = ident "(" ")" "{" stmt * "}"
+// func = ident "(" expr* ")" "{" stmt * "}"
 Node *func(){
+	LVar *lvar = calloc(1, sizeof(LVar));
+	lvar->next =locals;
+	lvar->offset = 0;
+	locals = lvar;
+
+
 	Node *node;
-	Node *node2;
+	Node *node2=NULL;
 	Node *node3;
-	Token *tok = consume_ident();
+	Node *node4;
+
+	Token *tok = consume_ident(); // 関数名が入る
 	if(tok){
+		// 関数定義ノード
 		node = new_node(ND_FUNC_DEF,NULL, NULL, NULL, NULL);
 		node->str = tok->str;
 		node->len = tok->len;
-		node->next = NULL;
 
 		expect("(");
-		expect(")");
-		
-		node2 = node;
-		if(consume("{")){
-			node3 = new_node(ND_BLOCK, NULL, NULL, NULL, NULL);
-			node->lhs = node3;
-			node2 = node3;
-			while(!consume("}")){
-				node2->next = stmt();
-				node2 = node2->next;
-			}		
 
+		// 引数処理 (rhsに連結リストで入れる)
+		int tmp=0;
+		node4 = new_node(ND_LVAR, NULL, NULL, NULL, NULL);
+		node2 = node4;
+		while(!consume(")")){
+			tok = consume_ident(); // 変数名があるはずなので取得
+			node4->next = new_node(ND_LVAR, NULL, NULL, NULL, NULL);
+			node4 = node4->next;
+			node4->str = tok->str;
+			node4->len = tok->len;
+
+			LVar *lvar = find_lvar(tok);
+			if(lvar){
+				error_at(token->str, "既に定義された変数です");
+			}else{
+				lvar = calloc(1, sizeof(LVar));
+				lvar->next = locals;
+				lvar->name = tok->str;
+				lvar->len = tok->len;
+				lvar->offset = locals->offset +8;
+				node4->offset = lvar->offset;
+				locals = lvar;
+			}
+
+			if(consume(")"))
+				break;
+			expect(",");
+			tmp = tmp+1;
 		}
+		node->rhs = node2->next;
+
+		
+
+		// ブロック内の処理(lhsに連結リストで入れる)
+		node3 = stmt();
+		node->lhs = node3;
+
 	}else{
-		printf("関数が来ていません\n");
+		error_at(token->str, "関数が来ていません\n");
 	}
 
 	return node;
