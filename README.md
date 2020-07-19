@@ -29,10 +29,10 @@ main(){
 ```
 
 ```
-foo(){
-	return 5;
+foo(a, b){
+	return 2*a+b;
 }
 main(){
-	return foo();
+	return foo(1,2);
 }
 ```
