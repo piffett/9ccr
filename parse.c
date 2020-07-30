@@ -306,6 +306,10 @@ Node *unary_on_primary(){
 		return primary();
 	if(consume("-"))
 		return new_node(ND_SUB, new_node_num(0), primary(), NULL, NULL);
+	if(consume("*"))
+		return new_node(ND_DEREF, unary_on_primary(), NULL, NULL, NULL);
+	if(consume("&"))
+		return new_node(ND_ADDR, unary_on_primary(), NULL, NULL, NULL);
 	return primary();
 }
 

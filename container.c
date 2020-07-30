@@ -83,7 +83,7 @@ void tokenize(char *p){
 		if(front_cmp(p, "+") || front_cmp(p, "-") || front_cmp(p, "*") || front_cmp(p,"/")||
 				front_cmp(p, "(") ||front_cmp(p, ")")||front_cmp(p, ">")||front_cmp(p, "<")||
 				front_cmp(p, "=") || front_cmp(p, ";") || front_cmp(p, "{") || front_cmp(p, "}")||
-			front_cmp(p, ",") ){
+			front_cmp(p, ",")|| front_cmp(p, "&") || front_cmp(p, "*") ){
 			cur = new_token(TK_RESERVED, cur, p++, 1);
 			continue;
 		}
