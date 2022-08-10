@@ -7,7 +7,7 @@ main(){
 	foo = 3;
 	ar = 5 * 6 - 8;
 	et = foo + bar / 2;
-	eturn ret; 
+	return ret; 
 }
 ```
 
